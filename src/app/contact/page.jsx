@@ -1,6 +1,6 @@
 export default function ContactPage() {
   return (
-    <main className="min-h-screen bg-lime-50 text-emerald-950 px-6 py-16">
+    <main className=" bg-lime-50 text-emerald-950 px-6 py-16">
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="text-center mb-10">

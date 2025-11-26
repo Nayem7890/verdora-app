@@ -74,7 +74,7 @@ export default function ManageProductsPage() {
     async function fetchPlants() {
       try {
         setLoading(true);
-        const res = await axios.get("http://localhost:5000/plants");
+        const res = await axios.get("https://verdora-server.vercel.app/plants");
         setPlants(res.data);
       } catch (err) {
         console.error("Failed to fetch plants:", err);
@@ -99,7 +99,7 @@ export default function ManageProductsPage() {
     try {
       setDeletingId(id);
 
-      const res = await axios.delete(`http://localhost:5000/plants/${id}`);
+      const res = await axios.delete(`https://verdora-server.vercel.app/plants/${id}`);
 
       if (res.data.deletedCount === 1) {
         setPlants((prev) => prev.filter((p) => p._id !== id));

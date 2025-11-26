@@ -48,7 +48,7 @@ export default function AddProductPage() {
         meta: { category },
       };
 
-      const res = await axios.post("http://localhost:5000/plants", newProduct);
+      const res = await axios.post("https://verdora-server.vercel.app/plants", newProduct);
 
       if (res.data.insertedId) {
         toast.success("Product added successfully!");
@@ -70,7 +70,7 @@ export default function AddProductPage() {
   if (!user) return null;
 
   return (
-    <main className="min-h-screen bg-lime-50 px-6 py-16">
+    <main className=" bg-lime-50 px-6 py-16">
       <div className="max-w-3xl mx-auto bg-white border border-lime-100 rounded-3xl p-10 shadow-lg">
 
         <h1 className="text-3xl font-extrabold text-emerald-900 text-center mb-6">

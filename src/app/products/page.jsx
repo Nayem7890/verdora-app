@@ -13,7 +13,7 @@ export default function ProductsPage() {
   useEffect(() => {
     async function fetchPlants() {
       try {
-        const res = await axios.get("http://localhost:5000/plants");
+        const res = await axios.get("https://verdora-server.vercel.app/plants");
         setPlants(res.data);
       } catch (err) {
         console.error("Axios fetch error:", err);
@@ -51,14 +51,14 @@ export default function ProductsPage() {
 
   if (loading) {
     return (
-      <main className="min-h-[60vh] flex items-center justify-center">
+      <main className=" flex items-center justify-center">
         <p className="text-emerald-800">Loading plants...</p>
       </main>
     );
   }
 
   return (
-    <main className="min-h-screen bg-lime-50 px-6 py-16">
+    <main className=" bg-lime-50 px-6 py-16">
       <div className="max-w-7xl mx-auto">
         {/* Page Header */}
         <div className="mb-10 text-center">

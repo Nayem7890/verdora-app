@@ -15,7 +15,7 @@ export default function ProductDetailsPage() {
   useEffect(() => {
     async function fetchPlant() {
       try {
-        const res = await axios.get("http://localhost:5000/plants");
+        const res = await axios.get("https://verdora-server.vercel.app/plants");
         const allPlants = res.data;
 
         const item = allPlants.find((p) => p.slug === slug);
@@ -39,7 +39,7 @@ export default function ProductDetailsPage() {
   // Loading state
   if (loading) {
     return (
-      <main className="min-h-[60vh] flex items-center justify-center bg-lime-50">
+      <main className=" flex items-center justify-center bg-lime-50">
         <p className="text-emerald-800">Loading product...</p>
       </main>
     );
@@ -48,7 +48,7 @@ export default function ProductDetailsPage() {
   // Not found
   if (notFound || !plant) {
     return (
-      <main className="min-h-screen bg-lime-50 flex items-center justify-center flex-col text-center px-6">
+      <main className=" bg-lime-50 flex items-center justify-center flex-col text-center px-6">
         <h2 className="text-3xl font-bold text-emerald-900">Product Not Found</h2>
         <p className="mt-2 text-emerald-900/70 max-w-md">
           The product you are looking for does not exist or has been removed.
@@ -66,7 +66,7 @@ export default function ProductDetailsPage() {
   const category = plant.meta?.category || plant.category || "Category";
 
   return (
-    <main className="min-h-screen bg-lime-50 px-6 py-16">
+    <main className=" bg-lime-50 px-6 py-16">
       <div className="max-w-5xl mx-auto">
 
         {/* Back Button */}
