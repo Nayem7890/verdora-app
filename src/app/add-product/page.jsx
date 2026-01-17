@@ -5,11 +5,13 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { auth } from "@/lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
+import { isMockLoggedIn, getMockUser } from "@/lib/mockAuth";
 import toast from "react-hot-toast";
 
 export default function AddProductPage() {
   const router = useRouter();
-  const [user, setUser] = useState(null);
+  const [isAuthed, setIsAuthed] = useState(false);
+  const [checkingAuth, setCheckingAuth] = useState(true);
 
   const [title, setTitle] = useState("");
   const [shortDesc, setShortDesc] = useState("");
@@ -21,12 +23,21 @@ export default function AddProductPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    // Check mock auth first
+    if (isMockLoggedIn()) {
+      setIsAuthed(true);
+      setCheckingAuth(false);
+      return;
+    }
+
+    // Then check Firebase auth
     const unsub = onAuthStateChanged(auth, (currentUser) => {
       if (!currentUser) {
         router.push("/login");
       } else {
-        setUser(currentUser);
+        setIsAuthed(true);
       }
+      setCheckingAuth(false);
     });
     return () => unsub();
   }, [router]);
@@ -67,7 +78,13 @@ export default function AddProductPage() {
     }
   };
 
-  if (!user) return null;
+  if (checkingAuth || !isAuthed) {
+    return (
+      <main className="min-h-[60vh] flex items-center justify-center bg-lime-50">
+        <p className="text-emerald-800">Checking authentication...</p>
+      </main>
+    );
+  }
 
   return (
     <main className=" bg-lime-50 px-6 py-16">

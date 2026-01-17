@@ -5,13 +5,15 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { auth } from "@/lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
+import { isMockLoggedIn, getMockUser } from "@/lib/mockAuth";
 import Link from "next/link";
 import toast from "react-hot-toast";
 
 export default function ManageProductsPage() {
   const router = useRouter();
 
-  const [user, setUser] = useState(null);
+  const [isAuthed, setIsAuthed] = useState(false);
+  const [checkingAuth, setCheckingAuth] = useState(true);
   const [plants, setPlants] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState(null);
@@ -51,15 +53,24 @@ export default function ManageProductsPage() {
     });
 
   /* -------------------------------------------------------------------
-     AUTH CHECK
+     AUTH CHECK - Supports both Firebase and Mock auth
   ------------------------------------------------------------------- */
   useEffect(() => {
+    // Check mock auth first
+    if (isMockLoggedIn()) {
+      setIsAuthed(true);
+      setCheckingAuth(false);
+      return;
+    }
+
+    // Then check Firebase auth
     const unsub = onAuthStateChanged(auth, (currentUser) => {
       if (!currentUser) {
         router.push("/login");
       } else {
-        setUser(currentUser);
+        setIsAuthed(true);
       }
+      setCheckingAuth(false);
     });
 
     return () => unsub();
@@ -69,7 +80,7 @@ export default function ManageProductsPage() {
      FETCH PRODUCTS
   ------------------------------------------------------------------- */
   useEffect(() => {
-    if (!user) return;
+    if (!isAuthed) return;
 
     async function fetchPlants() {
       try {
@@ -85,7 +96,7 @@ export default function ManageProductsPage() {
     }
 
     fetchPlants();
-  }, [user]);
+  }, [isAuthed]);
 
   const totalProducts = useMemo(() => plants.length, [plants]);
 
@@ -119,7 +130,13 @@ export default function ManageProductsPage() {
      RENDER
   ------------------------------------------------------------------- */
 
-  if (!user) return null;
+  if (checkingAuth || !isAuthed) {
+    return (
+      <main className="min-h-[60vh] flex items-center justify-center bg-lime-50">
+        <p className="text-emerald-800">Checking authentication...</p>
+      </main>
+    );
+  }
 
   if (loading) {
     return (
@@ -132,7 +149,7 @@ export default function ManageProductsPage() {
   return (
     <main className="min-h-screen bg-lime-50 px-6 py-16">
       <div className="max-w-6xl mx-auto">
-        
+
         {/* Header */}
         <div className="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
           <div>
@@ -156,7 +173,7 @@ export default function ManageProductsPage() {
           <div className="mt-10 text-center text-emerald-900/80">
             <p className="font-medium">No products found.</p>
             <p className="text-sm mt-1">
-              Add a new product from  
+              Add a new product from
               <Link
                 href="/add-product"
                 className="font-semibold text-emerald-800 hover:underline ml-1"
